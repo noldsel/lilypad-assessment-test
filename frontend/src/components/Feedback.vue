@@ -1,7 +1,12 @@
 <template>
   <main >
-    <h1>Simple Form</h1>
-    <FeedbackList />
+    
+    <v-container width="500">
+      <h1>LilyPad POS Feedback</h1>
+      <FeedbackStats />
+      <FeedbackList />
+    </v-container>
+    
     <form @submit.prevent="handleSubmit">
       <label for="name">Name:</label>
       <input
@@ -21,6 +26,7 @@
 <script setup>
 import { ref } from 'vue'
 import FeedbackList from './FeedbackList.vue'
+import FeedbackStats from './FeedbackStats.vue'
 
 const name = ref('')
 const submitted = ref(false)

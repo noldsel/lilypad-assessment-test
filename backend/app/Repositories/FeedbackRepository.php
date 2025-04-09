@@ -26,4 +26,26 @@ class FeedbackRepository
     {
         return Feedback::create($data);
     }
+
+    public function getFeedbackStats(): array
+    {
+        $average = Feedback::avg('rating');
+
+        $counts = Feedback::selectRaw('rating, COUNT(*) as count')
+            ->groupBy('rating')
+            ->pluck('count', 'rating');
+
+        $ratings = collect(range(1, 5))->mapWithKeys(function ($rating) use ($counts) {
+            return [$rating => $counts->get($rating, 0)];
+        });
+
+        $totalRatings = Feedback::count();
+
+
+        return [
+            'average_rating' => round($average, 2),
+            'ratings_count' => $ratings,
+            'total_ratings' => $totalRatings,
+        ];
+    }
 }

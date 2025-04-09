@@ -32,4 +32,9 @@ class FeedbackService
     {
         return $this->repository->create($data);
     }
+
+    public function stats()
+    {
+        return $this->repository->getFeedbackStats();
+    }
 }

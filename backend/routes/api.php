@@ -25,3 +25,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/feedback', [FeedbackController::class, 'index']);
 Route::post('/feedback', [FeedbackController::class, 'store']);
+Route::get('/stats', [FeedbackController::class, 'stats']);
