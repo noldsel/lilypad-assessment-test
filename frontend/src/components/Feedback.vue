@@ -40,6 +40,6 @@ import FeedbackListTable from './FeedbackListTable.vue'
 
 <style scoped>
 .spacer {
-  margin-bottom: 20px; /* Adjust the spacing as needed */
+  margin-bottom: 20px;
 }
 </style>

@@ -17,8 +17,5 @@ export default createVuetify({
   },
   theme: {
     defaultTheme: 'light',
-  },
-  display: {
-    mobileBreakpoint: 'sm', // Adjust this according to your needs
-  }
+  },  
 })
