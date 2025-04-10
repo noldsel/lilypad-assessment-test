@@ -1,6 +1,26 @@
 <template>
   <v-container>
     <v-row>
+
+      <v-col cols="12" md="4">
+        <v-select
+          v-model="ratingFilter"
+          :items="ratingOptions"
+          label="Filter by Rating"
+          item-text="title"
+          item-value="value"
+          @change="fetchFeedbacks" 
+          density="compact"
+          width="300"
+           :menu-props="{ maxHeight: '400', closeOnClick: true }"
+        >
+        <!-- <template v-slot:item="slotProps">
+             <div v-html="slotProps.item.title"></div>
+             
+          </template> -->
+        </v-select>
+      </v-col>
+
       <v-col
         v-for="item in items"
         :key="item.id"
@@ -56,6 +76,16 @@ const items = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 3;
 const totalItems = ref(0);
+const ratingFilter = ref(null);
+
+const ratingOptions = [
+  { title: 'All Ratings', value: null },
+  { title: '1 Star', value: 1 },
+  { title: '2 Stars', value: 2 },
+  { title: '3 Stars', value: 3 },
+  { title: '4 Stars', value: 4 },
+  { title: '5 Stars', value: 5 }
+];
 
 const fetchFeedbacks = async () => {
   console.log('calling fetch')
@@ -64,7 +94,10 @@ const fetchFeedbacks = async () => {
     const response = await api.get('/api/feedback', {
       params: {
         page: currentPage.value,
-        perPage: itemsPerPage
+        perPage: itemsPerPage,
+        filters: {
+          rating: ratingFilter.value
+        }
       }
     })
     items.value = response.data.data
@@ -80,6 +113,7 @@ const formatDate = (date) => new Date(date).toLocaleString()
 onMounted(fetchFeedbacks)
 
 watch(currentPage, fetchFeedbacks); 
+watch(ratingFilter, fetchFeedbacks);
 
 const pageCount = computed(() => {
   return Math.ceil(totalItems.value / itemsPerPage);

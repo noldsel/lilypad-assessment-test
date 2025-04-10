@@ -26,6 +26,7 @@ class GetFeedbackRequest extends FormRequest
         return [
             'page' => 'nullable|integer',
             'perPage' => 'nullable|integer',
+            'filters' => 'nullable|array'
         ];
     }
 }

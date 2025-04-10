@@ -16,12 +16,22 @@ class FeedbackRepository
         return Feedback::all();
     }
 
-    public function getAllPaginated(int $perPage = 10, int $offset)
+    public function getAllPaginatedWithFilter(int $perPage = 10, int $offset, array $filters = [])
     {
-        return Feedback::orderBy('created_at', 'desc')
+        // return Feedback::orderBy('created_at', 'desc')
+        //     ->skip($offset)
+        //     ->take($perPage)
+        //     ->get();
+
+        $query = Feedback::orderBy('created_at', 'desc')
             ->skip($offset)
-            ->take($perPage)
-            ->get();
+            ->take($perPage);
+
+        if (!empty($filters['rating'])) {
+            $query->where('rating', $filters['rating']);
+        }
+
+        return $query->get();
     }
 
     public function getTotalFeedbackCount()

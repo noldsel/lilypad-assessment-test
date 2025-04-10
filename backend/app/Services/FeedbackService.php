@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\FeedbackRepository;
 use App\Models\Feedback;
+use Illuminate\Support\Facades\Log;
 
 class FeedbackService
 {
@@ -21,10 +22,15 @@ class FeedbackService
     {
         $currentPage = $params['page'] ?? 1;
         $perPage = $params['perPage'] ?? 10;
+        $filters = $params['filters'] ?? [];
+
+        Log::info(print_r($filters, true));
+
+        // var_dump($filters);
 
         $offset = ($currentPage - 1) * $perPage;
 
-        $feedbacks =  $this->repository->getAllPaginated( $perPage, $offset);
+        $feedbacks =  $this->repository->getAllPaginatedWithFilter( $perPage, $offset, $filters);
         $totalFeedbackCount = $this->repository->getTotalFeedbackCount();
         $totalPages = ceil($totalFeedbackCount / $perPage);
 
