@@ -16,6 +16,19 @@ class FeedbackRepository
         return Feedback::all();
     }
 
+    public function getAllPaginated(int $perPage = 10, int $offset)
+    {
+        return Feedback::orderBy('created_at', 'desc')
+            ->skip($offset)
+            ->take($perPage)
+            ->get();
+    }
+
+    public function getTotalFeedbackCount()
+    {
+        return Feedback::count();
+    }
+
     /**
      * Create a new feedback record.
      *

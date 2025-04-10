@@ -16,9 +16,10 @@
         </div>
   
         <v-rating
-          :model-value="3.5"
+          :model-value="feedbackStats.average_rating"
           color="yellow-darken-3"
           half-increments
+          readonly
         ></v-rating>
         <div class="px-3">{{ feedbackStats.total_ratings }} ratings</div>
       </div>
@@ -52,6 +53,8 @@
             </template>
             </v-list-item>
         </v-list>
+
+        
   
       <!-- <v-list
         bg-color="transparent"
@@ -93,7 +96,6 @@ const fetchFeedbackStats = async () => {
   loading.value = true
   try {
     const { data } = await api.get('/api/stats')
-    console.log('resonse', data.data)
     feedbackStats.value = data.data
     // pagination.value.total = data.length
   } catch (error) {

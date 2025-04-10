@@ -1,61 +1,37 @@
 <template>
   <main >
     
-    <v-container width="500">
+    <v-container width="100%">
       <h1>LilyPad POS Feedback</h1>
-      <FeedbackStats />
-      <FeedbackList />
+      <v-row>
+        <v-col cols="6">
+          <FeedbackStats />
+          <div class="spacer"></div>
+          <FeedbackSubmit />
+        </v-col>
+        <v-col cols="6">
+          <FeedbackList />
+        </v-col>
+      </v-row>
+      
+      
     </v-container>
     
-    <form @submit.prevent="handleSubmit">
-      <label for="name">Name:</label>
-      <input
-        id="name"
-        type="text"
-        v-model="name"
-        placeholder="Enter your name"
-        required
-      />
-      <button type="submit">Submit</button>
-    </form>
-
-    <p v-if="submitted">Submitted name: {{ name }}</p>
+   
   </main>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+
 import FeedbackList from './FeedbackList.vue'
 import FeedbackStats from './FeedbackStats.vue'
+import FeedbackSubmit from './FeedbackSubmit.vue'
 
-const name = ref('')
-const submitted = ref(false)
 
-function handleSubmit() {
-  submitted.value = true
-}
 </script>
 
 <style scoped>
-.form-container {
-  max-width: 400px;
-  margin: 2rem auto;
-  padding: 1.5rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-}
-
-input {
-  display: block;
-  width: 100%;
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
-  padding: 0.5rem;
-  font-size: 1rem;
-}
-
-button {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
+.spacer {
+  margin-bottom: 20px; /* Adjust the spacing as needed */
 }
 </style>

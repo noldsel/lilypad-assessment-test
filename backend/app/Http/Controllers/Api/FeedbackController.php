@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Http\Requests\StoreFeedbackRequest;
+use App\Http\Requests\GetFeedbackRequest;
+
 use App\Services\FeedbackService;
 use App\Http\Resources\FeedbackStatsResource;
 
@@ -18,14 +20,14 @@ class FeedbackController extends Controller
     /**
      * Get all feedback.
      *
-     * @param Request $request
+     * @param GetFeedbackRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(GetFeedbackRequest $request)
     {
-        $feedback = $this->service->getAllFeedback();
+        $feedbacks = $this->service->getAllFeedback($request->validated());
 
-        return response()->json($feedback);
+        return response()->json($feedbacks);
     }
 
     /**

@@ -17,9 +17,24 @@ class FeedbackService
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getAllFeedback()
+    public function getAllFeedback(array $params)
     {
-        return $this->repository->getAll();
+        $currentPage = $params['page'] ?? 1;
+        $perPage = $params['perPage'] ?? 10;
+
+        $offset = ($currentPage - 1) * $perPage;
+
+        $feedbacks =  $this->repository->getAllPaginated( $perPage, $offset);
+        $totalFeedbackCount = $this->repository->getTotalFeedbackCount();
+        $totalPages = ceil($totalFeedbackCount / $perPage);
+
+        return collect([
+            'data' => $feedbacks,
+            'current_page' => $currentPage,
+            'per_page' => $perPage,
+            'total_pages' => $totalPages,
+            'total_feedback_count' => $totalFeedbackCount
+        ]);
     }
 
     /**

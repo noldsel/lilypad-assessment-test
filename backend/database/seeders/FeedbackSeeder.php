@@ -18,7 +18,7 @@ class FeedbackSeeder extends Seeder
 
         $feedbackData = [];
 
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 520; $i++) {
             $feedbackData[] = [
                 'customer_name' => $faker->name(),
                 'message' => $faker->paragraph(),
