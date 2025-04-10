@@ -27,6 +27,7 @@ class FeedbackController extends Controller
     {
         $feedbacks = $this->service->getAllFeedback($request->validated());
 
+        // NOTE: If I have more time, i prefer to use HTTP Resources
         return response()->json($feedbacks);
     }
 
@@ -41,6 +42,7 @@ class FeedbackController extends Controller
 
         $feedback = $this->service->storeFeedback($request->validated());
 
+        // NOTE: If I have more time, i prefer to use HTTP Resources
         return response()->json($feedback, Response::HTTP_CREATED);
     }
 
