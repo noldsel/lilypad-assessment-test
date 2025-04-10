@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h2>Card List</h2>
+    <h2>Table List</h2>
     <v-row>
 
       <v-col cols="12" md="4">
@@ -21,44 +21,33 @@
         </v-select>
       </v-col>
 
-      <v-col
-        v-for="item in items"
-        :key="item.id"
-        cols="12" 
-      >
-        <v-card >
-            <v-card-title class="d-flex justify-space-between">
-              <div>{{ item.customer_name }} </div>
-
-              
-            </v-card-title>
-            <v-card-text>
-              <v-rating 
-                :model-value="item.rating" 
-                icon="mdi-star" half-increments
-                color="yellow-darken-3"
-                readonly
-              />
-
-
-              
-              <div>
-                {{ item.message }}
-              </div>
-
-            </v-card-text>
-            <v-card-subtitle class="text-grey">
-              Submitted on {{ formatDate(item.created_at) }}
-            </v-card-subtitle>
-          </v-card>
-      </v-col>
+      
     </v-row>
-    <v-pagination
-      v-model="currentPage"
-      :length="pageCount"
-      :total-visible="5"
-      @update="fetchFeedbacks"
-    ></v-pagination>
+    
+    
+    <v-data-table-server
+      :headers="headers"
+      :items="items"
+      :items-per-page="itemsPerPage"
+      :items-length="totalItems"
+
+      :loading="loading"
+      :custom-filter="ratingFilter"
+      @update:page="handlePageChange"
+      @update:items-per-page="fetchFeedbacks"
+      item-value="id"
+    >
+
+    <template v-slot:[`item.rating`]="{ item }">
+      <v-rating 
+        :model-value="item.rating" 
+        icon="mdi-star" half-increments
+        color="yellow-darken-3"
+        readonly
+      />
+    </template>
+
+    </v-data-table-server>
     
   </v-container>
 </template>
@@ -73,9 +62,10 @@ import api from '@/plugins/axios'
 
 const items = ref([]);
 const currentPage = ref(1);
-const itemsPerPage = 3;
+const itemsPerPage = 10;
 const totalItems = ref(0);
 const ratingFilter = ref(null);
+const loading = ref(false);
 
 const ratingOptions = [
   { title: 'All Ratings', value: null },
@@ -86,10 +76,35 @@ const ratingOptions = [
   { title: '5 Stars', value: 5 }
 ];
 
+
+
+const headers = [
+  {
+    title: "Name",
+    align: "start",
+    sortable: false,
+    key: "customer_name",
+  },
+  {
+    title: "Message",
+    align: "start",
+    sortable: false,
+    key: "message",
+  },
+  {
+    title: "Rating",
+    align: "start",
+    sortable: false,
+    key: "rating",
+  },
+
+];
+
 const fetchFeedbacks = async () => {
   console.log('calling fetch')
   
   try {
+    loading.value = true
     const response = await api.get('/api/feedback', {
       params: {
         page: currentPage.value,
@@ -100,30 +115,31 @@ const fetchFeedbacks = async () => {
       }
     })
     items.value = response.data.data
-    console.log('items', response.data.data)
+    // console.log('items', response.data.data)
     totalItems.value = response.data.total_feedback_count; 
+
+    console.log('total items', totalItems.value)
   } catch (error) {
     console.error('Error fetching feedbacks:', error)
+  } finally {
+    loading.value = false
   }
 }
 
 const formatDate = (date) => new Date(date).toLocaleString()
+
+const handlePageChange = (page) => {
+  currentPage.value = page;
+  fetchFeedbacks(); // Fetch new page data
+};
 
 onMounted(fetchFeedbacks)
 
 watch(currentPage, fetchFeedbacks); 
 watch(ratingFilter, fetchFeedbacks);
 
-const pageCount = computed(() => {
-  return Math.ceil(totalItems.value / itemsPerPage);
-});
 
-// const paginatedItems = computed(() => {
-//   return items;
-//   // const start = (currentPage.value - 1) * itemsPerPage;
-//   // const end = start + itemsPerPage;
-//   // console.log('Paginated items:', items.value.slice(start, end));  // Debugging paginated items
-//   // return items.value.slice(start, end);
-// });
+
+
 
 </script>

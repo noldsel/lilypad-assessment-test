@@ -1,7 +1,8 @@
 <template>
-  <main >
+  <!-- <main > -->
     
-    <v-container width="100%">
+    
+    <v-container fluid>
       <h1>LilyPad POS Feedback</h1>
       <v-row>
         <v-col cols="6">
@@ -13,12 +14,18 @@
           <FeedbackList />
         </v-col>
       </v-row>
+
+      <v-row>
+        <v-col cols="12">
+          <FeedbackListTable />
+        </v-col>
+      </v-row>
       
       
     </v-container>
     
    
-  </main>
+  <!-- </main> -->
 </template>
 
 <script setup>
@@ -26,6 +33,7 @@
 import FeedbackList from './FeedbackList.vue'
 import FeedbackStats from './FeedbackStats.vue'
 import FeedbackSubmit from './FeedbackSubmit.vue'
+import FeedbackListTable from './FeedbackListTable.vue'
 
 
 </script>
