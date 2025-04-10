@@ -4,21 +4,7 @@
     <v-row>
 
       <v-col cols="12" md="4">
-        <v-select
-          v-model="ratingFilter"
-          :items="ratingOptions"
-          label="Filter by Rating"
-          item-text="title"
-          item-value="value"
-          @change="fetchFeedbacks" 
-          density="compact"
-          width="300"
-        >
-        <!-- <template v-slot:item="slotProps">
-             <div v-html="slotProps.item.title"></div>
-             
-          </template> -->
-        </v-select>
+        <Filters v-model="ratingFilter"/>
       </v-col>
 
       <v-col
@@ -67,6 +53,8 @@
 import { ref, onMounted, watch, computed } from 'vue'
 // import axios from 'axios'
 import api from '@/plugins/axios'
+import Filters from './Filters.vue';
+import eventBus from '@/eventBus';
 
 
 
@@ -77,14 +65,14 @@ const itemsPerPage = 3;
 const totalItems = ref(0);
 const ratingFilter = ref(null);
 
-const ratingOptions = [
-  { title: 'All Ratings', value: null },
-  { title: '1 Star', value: 1 },
-  { title: '2 Stars', value: 2 },
-  { title: '3 Stars', value: 3 },
-  { title: '4 Stars', value: 4 },
-  { title: '5 Stars', value: 5 }
-];
+// const ratingOptions = [
+//   { title: 'All Ratings', value: null },
+//   { title: '1 Star', value: 1 },
+//   { title: '2 Stars', value: 2 },
+//   { title: '3 Stars', value: 3 },
+//   { title: '4 Stars', value: 4 },
+//   { title: '5 Stars', value: 5 }
+// ];
 
 const fetchFeedbacks = async () => {
   console.log('calling fetch')
@@ -109,7 +97,15 @@ const fetchFeedbacks = async () => {
 
 const formatDate = (date) => new Date(date).toLocaleString()
 
-onMounted(fetchFeedbacks)
+// onMounted(fetchFeedbacks)
+onMounted(() => {
+  fetchFeedbacks();
+  eventBus.on('feedback-submitted', handleFeedback);
+});
+
+const handleFeedback = () => {
+  fetchFeedbacks();
+};
 
 watch(currentPage, fetchFeedbacks); 
 watch(ratingFilter, fetchFeedbacks);

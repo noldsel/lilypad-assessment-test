@@ -19,14 +19,27 @@
             density="compact"
           ></v-text-field>
 
-          <v-rating
+          <!-- <v-rating
             v-model="rating"
             label="Rating"
             outlined
             dense
             color="amber"
             background-color="grey lighten-4"
-          ></v-rating>
+          ></v-rating> -->
+          <div>How happy are you with this app?</div>
+          <v-rating 
+            v-model="rating" 
+            :max="5"
+            >
+            <template v-slot:item="{ index, isFilled }">
+              <v-icon 
+                :icon="getIcon(index, isFilled)" 
+                size="36" 
+                color="yellow-darken-3"
+              />
+            </template>
+          </v-rating>
 
           <v-textarea
             v-model="message"
@@ -35,6 +48,8 @@
             density="compact"
             rows="4"
           ></v-textarea>
+
+          
         </v-card-text>
 
         <v-card-actions>
@@ -47,8 +62,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import api from '@/plugins/axios'
+
+import eventBus from '@/eventBus';
 
 
 const showModal = ref(false);
@@ -56,6 +73,25 @@ const name = ref('');
 const rating = ref(null);
 const message = ref('');
 
+const outlinedIcons = [
+  'mdi-emoticon-cry-outline',
+  'mdi-emoticon-sad-outline',
+  'mdi-emoticon-neutral-outline',
+  'mdi-emoticon-happy-outline',
+  'mdi-emoticon-excited-outline',
+]
+
+const filledIcons = [
+  'mdi-emoticon-cry',
+  'mdi-emoticon-sad',
+  'mdi-emoticon-neutral',
+  'mdi-emoticon-happy',
+  'mdi-emoticon-excited',
+]
+
+const getIcon = (index, isFilled) => {
+  return isFilled ? filledIcons[index] : outlinedIcons[index]
+}
 
 const submitFeedback = async () => {
   
@@ -75,7 +111,7 @@ const submitFeedback = async () => {
   } catch (error) {
     console.error('Error fetching feedbacks:', error)
   } finally {
-    console.log('successful')
+    eventBus.emit('feedback-submitted');
   }
 
   

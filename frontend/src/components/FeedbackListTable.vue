@@ -4,24 +4,8 @@
     <v-row>
 
       <v-col cols="12" md="4">
-        <v-select
-          v-model="ratingFilter"
-          :items="ratingOptions"
-          label="Filter by Rating"
-          item-text="title"
-          item-value="value"
-          @change="fetchFeedbacks" 
-          density="compact"
-          width="300"
-        >
-        <!-- <template v-slot:item="slotProps">
-             <div v-html="slotProps.item.title"></div>
-             
-          </template> -->
-        </v-select>
-      </v-col>
-
-      
+        <Filters v-model="ratingFilter"/>
+      </v-col>      
     </v-row>
     
     
@@ -30,9 +14,7 @@
       :items="items"
       :items-per-page="itemsPerPage"
       :items-length="totalItems"
-
       :loading="loading"
-      :custom-filter="ratingFilter"
       @update:page="handlePageChange"
       @update:items-per-page="fetchFeedbacks"
       item-value="id"
@@ -54,11 +36,9 @@
 
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue'
-// import axios from 'axios'
 import api from '@/plugins/axios'
-
-
-
+import Filters from './Filters.vue';
+import eventBus from '@/eventBus';
 
 const items = ref([]);
 const currentPage = ref(1);
@@ -67,14 +47,14 @@ const totalItems = ref(0);
 const ratingFilter = ref(null);
 const loading = ref(false);
 
-const ratingOptions = [
-  { title: 'All Ratings', value: null },
-  { title: '1 Star', value: 1 },
-  { title: '2 Stars', value: 2 },
-  { title: '3 Stars', value: 3 },
-  { title: '4 Stars', value: 4 },
-  { title: '5 Stars', value: 5 }
-];
+// const ratingOptions = [
+//   { title: 'All Ratings', value: null },
+//   { title: '1 Star', value: 1 },
+//   { title: '2 Stars', value: 2 },
+//   { title: '3 Stars', value: 3 },
+//   { title: '4 Stars', value: 4 },
+//   { title: '5 Stars', value: 5 }
+// ];
 
 
 
@@ -133,7 +113,15 @@ const handlePageChange = (page) => {
   fetchFeedbacks(); // Fetch new page data
 };
 
-onMounted(fetchFeedbacks)
+// onMounted(fetchFeedbacks)
+onMounted(() => {
+  fetchFeedbacks();
+  eventBus.on('feedback-submitted', handleFeedback);
+});
+
+const handleFeedback = () => {
+  fetchFeedbacks();
+};
 
 watch(currentPage, fetchFeedbacks); 
 watch(ratingFilter, fetchFeedbacks);
